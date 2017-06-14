@@ -1,3 +1,5 @@
+local finger_js = 
+[[
 <script type="text/javascript">
 var oTemp = document.createDocumentFragment();
 function watermark(settings) {
@@ -87,3 +89,12 @@ function doWaterMark(){
 setTimeout("doWaterMark()", 500)
 
 </script>
+]]
+
+local _M = {}
+
+function _M.js()
+  return finger_js  
+end
+
+return _M
