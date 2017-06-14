@@ -4,7 +4,7 @@ local finger = require "kong.plugins.ab-gray.finger"
 local _M = {}
 
 function _M.add_finger(conf, buffer)
-  local finger_js = string.gsub(finger.js(), "{expect_email}", ngx.ctx.gray_user)
+  local finger_js = string.gsub(finger.js(), "{gray_email}", ngx.ctx.gray_user)
   -- try to unzip
   local whole = buffer
   local status, debody = pcall(com.decode, buffer)

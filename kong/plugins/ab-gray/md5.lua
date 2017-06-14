@@ -230,8 +230,6 @@ local function cut_le_str(s,...)
   return r
 end
 
-local swap = function (w) return str2bei(lei2str(w)) end
-
 -- An MD5 mplementation in Lua, requires bitlib (hacked to use LuaBit from above, ugh)
 -- 10/02/2001 jcw@equi4.com
 

@@ -1,11 +1,11 @@
-local Errors = require "kong.dao.errors"
-
 return {
   fields = { 
-    upstream_a = { type = "string" },
-    upstream_b = { type = "string" }
-  },
-  self_check = function(schema, plugin_t, dao, is_update)
-    return true
-  end
+    upstream_a = { required = true, type = "string" },
+    upstream_b = { required = true, type = "string" },
+    normal_upstream = {
+      type = "string",
+      default = "A",
+      enum = { "A", "B" }
+    }
+  }
 }

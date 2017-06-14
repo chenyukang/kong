@@ -50,7 +50,6 @@ function _M.verify_gray_from_cookie()
   if true then
     local user = "yukang.chen@dji.com"
     local gray_token = _M.gen_random_token(user)
-
     return user, gray_token
   end
   
@@ -68,7 +67,7 @@ function _M.verify_gray_from_cookie()
     return nil, nil
   end
 
-  local json, err = red:get(view_gray)
+  local json, _ = red:get(view_gray)
   local ok, err = red:set_keepalive(10000, 80)
   if not ok then
     ngx.log(ngx.ERR, "failed to set keepalive: ", err)
@@ -104,7 +103,7 @@ function _M.verify_from_header()
       ngx.log(ngx.ERR, "connect redis error", err)
       return nil, nil
     end
-    local user, err = red:get(token)
+    local user, _ = red:get(token)
     local ok, err = red:set_keepalive(10000, 80)
     if not ok then
       ngx.log(ngx.ERR, "failed to set keepalive: ", err)
@@ -137,6 +136,18 @@ function _M.verify_gray()
     return gray_user
   end
   return nil
+end
+
+function _M.process_upstream(conf)
+  ngx.ctx.gray_auth_redis = conf.redis or "127.0.0.1"
+  local gray_user = _M.verify_gray()
+  local upstream;
+  if gray_user then
+    upstream = (conf.normal_upstream == "A" and conf.upstream_b) or conf.upstream_a
+  else
+    upstream = (conf.normal_upstream == "A" and conf.upstream_a) or conf.upstream_b
+  end
+  return upstream
 end
 
 return _M

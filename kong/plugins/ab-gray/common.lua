@@ -23,7 +23,6 @@ end
 
 function _M.decode(str)
   local zlib = require "zlib"
-  if unexpected_condition then error() end
   local stream = zlib.inflate()
   local ret = stream(str)
   return ret
@@ -71,18 +70,18 @@ function _M.in_table(tbl, item)
   return false
 end
 
-function _M.read_key(key)
+function _M.read_key(host, key)
   ngx.log(ngx.ERR, "read redis key: ", key)
   local red = redis:new()
   red:set_timeout(2000) -- 2 sec
 
-  local ok, err = red:connect("127.0.0.1", 6379)
+  local ok, err = red:connect(host, 6379)
   if not ok then
     ngx.log(ngx.ERR, "connect redis error", err)
     return nil
   end
 
-  local ret, err = red:get(key)
+  local ret, _ = red:get(key)
   local ok, err = red:set_keepalive(10000, 80)
   if not ok then
     ngx.log(ngx.ERR, "failed to set keepalive: ", err)

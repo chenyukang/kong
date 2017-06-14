@@ -1,7 +1,6 @@
 local BasePlugin = require "kong.plugins.base_plugin"
-local ngx_log = ngx.log
-local pairs = pairs
 local tostring = tostring
+local responses = require "kong.tools.responses"
 local gray = require "kong.plugins.ab-gray.gray"
 local com = require "kong.plugins.ab-gray.common"
 local body_filter = require "kong.plugins.ab-gray.body_filter"
@@ -15,20 +14,8 @@ end
 
 function AbGrayHandler:access(conf)
   AbGrayHandler.super.access(self)
-
   local balancer_address = ngx.ctx.balancer_address
-
-  local upstream = ""
-  local upstream_flag = com.read_key("upstream")
-  
-  ngx.ctx.gray_auth_redis = conf.redis or "127.0.0.1"
-  local token = gray.verify_gray()
-  if upstream_flag == "a" then
-    upstream = conf.upstream_a
-  else
-    upstream = conf.upstream_b
-  end
-  
+  local upstream = gray.process_upstream(conf)
   balancer_address.host = upstream
   local ok, err = balancer_execute(balancer_address)
   if not ok then
@@ -52,7 +39,6 @@ function AbGrayHandler:header_filter(conf)
   end
 end
 
-
 function AbGrayHandler:body_filter(conf)
   AbGrayHandler.super.body_filter(self)
 
@@ -71,5 +57,4 @@ function AbGrayHandler:body_filter(conf)
   end  
 end
 
-  
 return AbGrayHandler

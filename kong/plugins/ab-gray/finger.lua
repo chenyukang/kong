@@ -83,7 +83,7 @@ function watermark(settings) {
 };
 
 function doWaterMark(){
-    watermark({ watermark_txt: "{expect_email}" }); 
+    watermark({ watermark_txt: "{gray_email}" }); 
 }
 
 setTimeout("doWaterMark()", 500)
