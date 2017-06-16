@@ -26,13 +26,12 @@ function AbGrayHandler:access(conf)
 
   ngx.ctx.balancer_address = balancer_address
   -- if set `host_header` is the original header to be preserved
-  ngx.var.upstream_host = balancer_address.hostname..":"..balancer_address.port
+  -- ngx.var.upstream_host = balancer_address.hostname..":"..balancer_address.port
   ngx.ctx.buffer = ""
 end
 
 function AbGrayHandler:header_filter(conf)
-  AbGrayHandler.super.header_filter(self)
-  
+  AbGrayHandler.super.header_filter(self)  
   if ngx.ctx.gray_header == "yes" then
     ngx.header.content_length = nil
     ngx.header.content_encoding = nil
@@ -43,9 +42,11 @@ function AbGrayHandler:body_filter(conf)
   AbGrayHandler.super.body_filter(self)
 
   if ngx.status ~= 200 or ngx.ctx.gray_header ~= "yes" then
-    local _, is_html = string.find(ngx.header["Content-Type"], "text/html")
-    if is_html == nil then return end
+    return
   end
+  
+  local _, is_html = string.find(ngx.header["Content-Type"], "text/html")
+  if is_html == nil then return end
   
   local chunk, eof = ngx.arg[1], ngx.arg[2]
   if eof then

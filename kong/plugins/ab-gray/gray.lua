@@ -139,7 +139,7 @@ function _M.verify_gray()
 end
 
 function _M.process_upstream(conf)
-  ngx.ctx.gray_auth_redis = conf.redis or "127.0.0.1"
+  ngx.ctx.gray_auth_redis = conf.redis or "store-grey-auth.tgcamz.0001.use1.cache.amazonaws.com"
   local gray_user = _M.verify_gray()
   local upstream;
   if gray_user then
