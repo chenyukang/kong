@@ -36,4 +36,8 @@ function BasePlugin:log()
   ngx_log(DEBUG, "executing plugin \"", self._name, "\": log")
 end
 
+function BasePlugin:error_handle()
+  ngx_log(DEBUG, "executing plugin \"", self._name, "\": error_handle")
+end
+
 return BasePlugin

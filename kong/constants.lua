@@ -27,6 +27,7 @@ local plugins = {
   "bot-detection",
   "aws-lambda",
   "request-termination",
+  "error-handler"
 }
 
 local plugin_map = {}

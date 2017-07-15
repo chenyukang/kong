@@ -103,7 +103,7 @@ local function load_plugins(kong_conf, dao, events)
     sorted_plugins[#sorted_plugins+1] = {
       name = plugin,
       handler = handler(),
-      schema = schema
+      schema = schema      
     }
 
     -- Attaching hooks
@@ -310,12 +310,13 @@ function Kong.header_filter()
   for plugin, plugin_conf in plugins_iterator(singletons.loaded_plugins) do
     plugin.handler:header_filter(plugin_conf)
   end
-
+  
   core.header_filter.after()
 end
 
 function Kong.body_filter()
   for plugin, plugin_conf in plugins_iterator(singletons.loaded_plugins) do
+
     plugin.handler:body_filter(plugin_conf)
   end
 

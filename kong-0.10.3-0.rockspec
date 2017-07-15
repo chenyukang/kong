@@ -92,6 +92,7 @@ build = {
     ["kong.core.certificate"] = "kong/core/certificate.lua",
     ["kong.core.router"] = "kong/core/router.lua",
     ["kong.core.plugins_iterator"] = "kong/core/plugins_iterator.lua",
+    ["kong.core.plugin_load"] = "kong/core/plugin_load.lua",
     ["kong.core.hooks"] = "kong/core/hooks.lua",
     ["kong.core.reports"] = "kong/core/reports.lua",
     ["kong.core.cluster"] = "kong/core/cluster.lua",
@@ -162,6 +163,9 @@ build = {
 
     ["kong.plugins.file-log.handler"] = "kong/plugins/file-log/handler.lua",
     ["kong.plugins.file-log.schema"] = "kong/plugins/file-log/schema.lua",
+
+    ["kong.plugins.error-handler.handler"] = "kong/plugins/error-handler/handler.lua",
+    ["kong.plugins.error-handler.schema"] = "kong/plugins/error-handler/schema.lua",
 
     ["kong.plugins.runscope.handler"] = "kong/plugins/runscope/handler.lua",
     ["kong.plugins.runscope.schema"] = "kong/plugins/runscope/schema.lua",
