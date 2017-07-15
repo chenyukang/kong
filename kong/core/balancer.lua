@@ -287,8 +287,8 @@ local function execute(target)
       if port == "No peers are available" then
         -- in this case a "503 service unavailable", others will be a 500.
         log(ERROR, "failure to get a peer from the ring-balancer '",
-                   target.host, "': ", port)
-        return responses.send(503)
+            target.host, "': ", port)
+        ngx.exit(503)        
       end
 
       return nil, port -- some other error
@@ -307,7 +307,7 @@ local function execute(target)
       -- in this case a "503 service unavailable", others will be a 500.
       log(ERROR, "name resolution failed for '", tostring(target.host),
                  "': ", port)
-      return responses.send(503)
+      return ngx.exit(503)
     end
     return nil, port
   end

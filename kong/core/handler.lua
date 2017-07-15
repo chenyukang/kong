@@ -87,7 +87,7 @@ return {
 
       local ctx = ngx.ctx
       local var = ngx.var
-
+      
       ctx.KONG_ACCESS_START = get_now()
 
       local api, upstream, host_header, uri = router.exec(ngx)
@@ -95,6 +95,7 @@ return {
         return responses.send_HTTP_NOT_FOUND("no API found with those values")
       end
 
+      ngx.var.api_id = api.id
       if api.https_only and not utils.check_https(api.http_if_terminated) then
         ngx.header["connection"] = "Upgrade"
         ngx.header["upgrade"]    = "TLS/1.2, HTTP/1.1"

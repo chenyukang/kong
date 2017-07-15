@@ -1,4 +1,5 @@
 local singletons = require "kong.singletons"
+local load_plugin_configuration = require "kong.core.plugin_load"
 
 local find = string.find
 local format = string.format
@@ -33,7 +34,7 @@ local SERVER_HEADER = _KONG._NAME .. "/" .. _KONG._VERSION
 return function(ngx)
   local accept_header = ngx.req.get_headers()["accept"]
   local template, message, content_type
-
+  
   if accept_header == nil then
     accept_header = singletons.configuration.error_default_type
   end
@@ -52,13 +53,28 @@ return function(ngx)
     content_type = TYPE_PLAIN
   end
 
-  local status = ngx.status
-  message = BODIES["s" .. status] and BODIES["s" .. status] or format(BODIES.default, status)
-
-  if singletons.configuration.server_tokens then
-    ngx.header["Server"] = SERVER_HEADER
+  local error_conf = load_plugin_configuration(ngx.var.api_id, nil, "error-handler")
+  
+  ngx.ctx.error_done = false
+  if error_conf ~= nil then 
+    for _, plugin in pairs(singletons.loaded_plugins) do
+      if plugin.name == "error-handler" then
+        plugin.handler:error_handle(error_conf)
+        break
+      end
+    end
   end
 
-  ngx.header["Content-Type"] = content_type
-  ngx.say(format(template, message))
+  if not ngx.ctx.error_done then
+    local status = ngx.status
+    message = BODIES["s" .. status] and BODIES["s" .. status] or format(BODIES.default, status)
+
+    if singletons.configuration.server_tokens then
+      ngx.header["Server"] = SERVER_HEADER
+    end
+
+    ngx.header["Content-Type"] = content_type
+    ngx.say(format(template, message))
+  end
+  
 end

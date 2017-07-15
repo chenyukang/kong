@@ -110,6 +110,7 @@ server {
         set $upstream_host nil;
         set $upstream_scheme nil;
         set $upstream_uri nil;
+        set $app_id nil;
 
         rewrite_by_lua_block {
             kong.rewrite()
